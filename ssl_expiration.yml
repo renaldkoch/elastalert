@@ -1,0 +1,19 @@
+name: ssl_expiration
+type: frequency
+index: heartbeat-*
+query_key: http.url
+num_events: 5
+timeframe:
+  minutes: 5
+realert:
+  hours: 24
+filter:
+- query_string:
+      query: 'monitor.scheme : https AND monitor.status : up'
+- range:
+    tls.certificate_not_valid_after:
+      from: "now"
+      to: "now+5d"
+alert:
+ - email:
+     email: "Your Email"
